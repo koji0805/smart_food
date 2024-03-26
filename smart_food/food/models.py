@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse_lazy
 
 
 class BaseModel(models.Model):
@@ -17,3 +17,7 @@ class Foods(BaseModel):
   
   class Meta:
     db_table = 'foods'
+    
+  def get_absolute_url(self):
+    return reverse_lazy("food:detail_food", kwargs={"pk": self.pk})
+  

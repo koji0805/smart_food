@@ -1,0 +1,5 @@
+<form method="post">
+{% csrf_token %}
+<p>{{ object.name }}を削除してよろしいでしょうか？</p>
+<button type="submit">削除する</button>
+</form>
