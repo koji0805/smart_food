@@ -1,0 +1,13 @@
+<p><a href="{% url "food:add_food" %}">データ追加</a></p>
+<table>
+  <tbody>
+  {% for object in object_list %}
+  <tr>
+    <td>商品名: <a href="{{ object.get_absolute_url }}">{{ object.name }}</a></td>
+    <td>保存期限: {{ object.expirydate }}</td>
+    <td><a href="{% url "food:edit_food" object.id %}">編集</td>
+    <td><a href="{% url "food:delete_food" object.id %}">削除<a/></td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
