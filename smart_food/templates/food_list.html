@@ -7,6 +7,11 @@
     <td>保存期限: {{ object.expirydate }}</td>
     <td><a href="{% url "food:edit_food" object.id %}">編集</td>
     <td><a href="{% url "food:delete_food" object.id %}">削除<a/></td>
+    <td>
+      {% for picture in object.pictures_set.all %}
+        <img width="20px" height="20px" src={{ picture.picture.url }}>
+      {% endfor %}
+    </td>
   </tr>
   {% endfor %}
   </tbody>
