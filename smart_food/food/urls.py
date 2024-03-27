@@ -3,6 +3,7 @@ from .views import (
   IndexView, HomeView, FoodDetailView,
   FoodListView,FoodCreateView, FoodUpdateView,
   FoodDeleteView, FoodFormView, FoodRedirectView,
+  delete_picture,
 )
 # from django.views.generic.base import TemplateView
 from django.views.generic.base import RedirectView
@@ -23,4 +24,5 @@ urlpatterns = [
   path("google/", RedirectView.as_view(url="https://google.co.jp")),
   path("food_redirect_view/", FoodRedirectView.as_view(), name="food_redirect_view"),
   path("food_redirect_view/<int:pk>", FoodRedirectView.as_view(), name="food_redirect_view"),
+  path("delete_picture/<int:pk>", delete_picture, name="delete_picture"),
 ]

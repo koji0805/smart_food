@@ -2,7 +2,7 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.base import(
   View, TemplateView, RedirectView
 )
@@ -14,9 +14,10 @@ from django.views.generic.edit import (
 )
 from . import forms
 from datetime import datetime
-from .models import Foods
+from .models import Foods, Pictures
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 class IndexView(View):
   
@@ -98,6 +99,22 @@ class FoodUpdateView(SuccessMessageMixin, UpdateView):
     print(cleaned_data)
     return cleaned_data.get("name") + "を更新しました"
   
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    picture_form = forms.PictureUploadForm()
+    pictures = Pictures.objects.filter(food=self.object)
+    context["pictures"] = pictures
+    context["picture_form"] = picture_form
+    return context
+  
+  def post(self, request, *args, **kwargs):
+    #画像をアップロードする処理を書く
+    picture_form = forms.PictureUploadForm(request.POST or None, request.FILES or None)
+    if picture_form.is_valid() and request.FILES:
+      food = self.get_object() # 更新中のFoodがどのBookなのか取得
+      picture_form.save(food=food)
+    return super(FoodUpdateView, self).post(request, *args, *kwargs)
+  
 class FoodDeleteView(DeleteView):
   model = Foods
   template_name = "delete_food.html"
@@ -130,3 +147,13 @@ class FoodRedirectView(RedirectView):
       return reverse_lazy("food:detail_food", kwargs={"pk": kwargs["pk"]})
     
     return reverse_lazy("food:edit_food", kwargs={"pk": food.pk})
+  
+  
+def delete_picture(request, pk):
+  picture = get_object_or_404(Pictures, pk=pk)
+  picture.delete()
+  # import os
+  # if os.path.isfile(picture.picture.path):
+  #   os.remove(picture.picture.path)
+  messages.success(request, "画像を削除しました")
+  return redirect("food:edit_food", pk=picture.food.id)

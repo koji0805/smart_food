@@ -3,8 +3,19 @@
   {{ message.message }}
 {% endfor %}
 {% endif %}
-<form method="post">
+<form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}
+  <hr>
+  {% for picture in pictures %}
+    <a href="{% url "food:delete_picture" pk=picture.id %}"><img width="100px" height="100px" src="{{ picture.picture.url }}"></a>
+  {% endfor %}
+  {{ picture_form.as_p }}
 <button type="submit">更新</button>
 </form>
+
+<style>
+img:hover{
+  opacity: 0.2;
+}
+</style>
